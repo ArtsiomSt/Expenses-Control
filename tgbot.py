@@ -50,11 +50,9 @@ def get_username(message):
         "username": u_p[0],
         "password": u_p[1],
     }
-    print(for_req)
     url_log = 'auth/token/login'
     url = domen+url_log
     resp = requests.post(url, json=for_req)
-    print(resp.json())
     if not 'auth_token' in resp.json().keys():
         botsite.send_message(message.chat.id, 'Unable to link with those creditials')
         return
