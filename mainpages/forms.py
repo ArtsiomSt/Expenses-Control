@@ -1,7 +1,10 @@
+import re
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from.models import Categories, SpentModel
+import string
 
 
 class LoginForm(forms.Form):
@@ -20,6 +23,13 @@ class RegisrtaeForm(UserCreationForm):
 
 class CreateCategory(forms.Form):
     title = forms.CharField(max_length=50)
+
+    def clean_title(self):
+        title_for_validation = self.cleaned_data['title']
+        if not re.match(r'[^0-9][a-z]', title_for_validation):
+            raise ValidationError("Category cant start with a number")
+        return title_for_validation
+
 
 
 class CreateSpentForm(forms.Form):
