@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .forms import LoginForm, RegisrtaeForm, CreateCategory, CreateSpentForm
 from .models import Categories, SpentModel, UserFromTg
-from .serializers import UserFromTelegramSer
+from .serializers import UserFromTelegramSer, GetUserSpentSer
 
 
 
@@ -174,6 +174,19 @@ class LinkUserFromTg(APIView):
         user_for_linking = User.objects.get(username=serializer.data['username'])
         UserFromTg.objects.create(user=user_for_linking, tguserid=serializer.data['usertgid'])
         return Response({'answer':'success'})
+
+
+class SendUserSpentsToTG(APIView):
+    def get(self, request):
+        print(request.query_params)
+        if not 'usertgid' in request.query_params.keys():
+            return Response({'answer':'You have to give users tgid'})
+        try:
+            user_from_tg = UserFromTg.objects.get(tguserid=request.query_params['usertgid'])
+        except:
+            return Response({'answer':'there is no such user'})
+        serializer = GetUserSpentSer(SpentModel.objects.filter(user=user_from_tg.user), many=True)
+        return Response({'answer':'success', 'spents':serializer.data})
 
 
 def count_price(querysetSpent):
