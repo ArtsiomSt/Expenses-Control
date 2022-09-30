@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .forms import LoginForm, RegisrtaeForm, CreateCategory, CreateSpentForm
 from .models import Categories, SpentModel, UserFromTg
-from .serializers import UserFromTelegramSer, GetUserSpentSer
+from .serializers import UserFromTelegramSer, GetUserSpentSer, GetUsersCats
+from rest_framework import generics
 
 
 
@@ -187,6 +188,22 @@ class SendUserSpentsToTG(APIView):
             return Response({'answer':'there is no such user'})
         serializer = GetUserSpentSer(SpentModel.objects.filter(user=user_from_tg.user), many=True)
         return Response({'answer':'success', 'spents':serializer.data})
+
+
+class GetCats(generics.ListAPIView):
+    serializer_class = GetUsersCats
+    queryset = Categories.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        if not 'usertgid' in request.query_params.keys():
+            return Response({'answer':'You have to give users tgid'})
+        try:
+            user_from_tg = UserFromTg.objects.get(tguserid=request.query_params['usertgid'])
+        except:
+            return Response({'answer':'there is no such user'})
+        self.queryset = Categories.objects.filter(user=user_from_tg.user)
+        serializer = GetUsersCats(self.queryset, many=True)
+        return Response(serializer.data)
 
 
 def count_price(querysetSpent):

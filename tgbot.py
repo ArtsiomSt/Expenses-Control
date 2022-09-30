@@ -66,6 +66,27 @@ def get_username(message):
     botsite.send_message(message.chat.id, 'Linked')
 
 
+@botsite.message_handler(commands=['myspents'])
+def get_self_spents(message):
+    url = domen+'api/v1/getusersspents/'
+    resp = requests.get(url, params={'usertgid': message.from_user.id})
+    url = domen+'api/v1/getuserscats/'
+    resp_cats = requests.get(url, params={'usertgid': message.from_user.id})
+    print(resp_cats.json())
+    print(resp.json())
+    for item in resp.json()['spents']:
+        message_for_user = ''
+        title = item['title']
+        all_spents = item['amount']*item['price_for_unit']
+        cat_pk = item['category']
+        for item in resp_cats.json():
+            if cat_pk == item['pk']:
+                cat_title = item['title']
+        message_for_user += f'Name of spending: {title} \n'
+        message_for_user +=f'Spent: {all_spents} \n'
+        message_for_user += f'Category: {cat_title}'
+        botsite.send_message(message.chat.id, message_for_user)
+
 
 
 botsite.polling(none_stop=True)
