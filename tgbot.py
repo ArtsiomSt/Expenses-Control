@@ -17,11 +17,11 @@ def start(message):
 
 @botsite.message_handler(commands=['help'])
 def help(message):
-    botsite.send_message(message.chat.id, message)
     message_for_user = 'Here is the list of commands /linkaccount'
     buttons = types.ReplyKeyboardMarkup(resize_keyboard=True)
     link_account = types.KeyboardButton('/linkaccount')
-    buttons.add(link_account)
+    get_your_spents = types.KeyboardButton('/myspents')
+    buttons.add(link_account, get_your_spents)
     botsite.send_message(message.chat.id, message_for_user, reply_markup=buttons)
 
 
