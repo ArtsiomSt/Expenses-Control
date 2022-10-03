@@ -18,7 +18,7 @@ def homepage(request, time = datetime.datetime.now()):
     except:
         message = ''
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect('logining')
     allcats = Categories.objects.filter(user=request.user)
     users_spents = SpentModel.objects.filter(user=request.user).order_by('time_buyed')
     users_spents_day = SpentModel.objects.filter(Q(day_buyed__day=time.day) & Q(day_buyed__month=time.month) & Q(day_buyed__year=time.year) & Q(user=request.user))
