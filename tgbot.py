@@ -4,7 +4,7 @@ from telebot import types
 
 domen = 'http://127.0.0.1:8000/'
 
-botsite = telebot.TeleBot('5337259262:AAGgF5IkIBs91MU3lvPw_g8af-9WeTS7-xg')
+botsite = telebot.TeleBot('5337259262:AAGgF5IkIBs91MU3l7-xg')
 
 @botsite.message_handler(commands=['start'])
 def start(message):
